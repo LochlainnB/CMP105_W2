@@ -17,8 +17,17 @@ Level::~Level()
 // handle user input
 void Level::handleInput()
 {
-
-
+	bool endl = false;
+	for (int i = 0; i < 256; i++) {
+		if (input->isKeyDown(i)) {
+			input->setKeyUp(i);
+			std::cout << i;
+			endl = true;
+		}
+	}
+	if (endl) {
+		std::cout << "\n";
+	}
 }
 
 // Update game objects
