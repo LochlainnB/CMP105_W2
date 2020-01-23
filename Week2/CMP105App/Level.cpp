@@ -4,9 +4,17 @@ Level::Level(sf::RenderWindow* hwnd, Input* in)
 {
 	window = hwnd;
 	input = in;
+	input->setMouseRDown(false);
 
 	// initialise game objects
+	font.loadFromFile("font/arial.ttf");
 
+	text.setFont(font);
+	text.setPosition(0, 0);
+
+	circle.setFillColor(sf::Color::Magenta);
+	circle.setRadius(50);
+	circle.setPosition(-100, -100);
 }
 
 Level::~Level()
@@ -17,16 +25,43 @@ Level::~Level()
 // handle user input
 void Level::handleInput()
 {
-	bool endl = false;
-	for (int i = 0; i < 256; i++) {
-		if (input->isKeyDown(i)) {
-			input->setKeyUp(i);
-			std::cout << i;
-			endl = true;
-		}
+	//output if w pressed
+	if (input->isKeyDown(22)) {
+		std::cout << "W has been pressed.\n";
+		input->setKeyUp(22);
 	}
-	if (endl) {
-		std::cout << "\n";
+
+	//output if j+k+l pressed
+	if (input->isKeyDown(9) && input->isKeyDown(10) && input->isKeyDown(11)) {
+		std::cout << "J, K and L have been pressed.\n";
+		input->setKeyUp(9);
+		input->setKeyUp(10);
+		input->setKeyUp(11);
+	}
+
+	//quit if escape pressed
+	if (input->isKeyDown(36)) {
+		window->close();
+	}
+
+	//set text to mouse position
+	text.setString((std::string)"X: " + std::to_string(input->getMouseX()) + (std::string)", Y: " + std::to_string(input->getMouseY()) + "\n");
+
+	//measure mouse drag distance
+	if (input->isMouseLDown() && initialX == -1) {
+		initialX = input->getMouseX();
+		initialY = input->getMouseY();
+	}
+	if (!input->isMouseLDown() && initialX != -1) {
+		std::cout << sqrt(pow(input->getMouseX() - initialX, 2) + pow(input->getMouseY() - initialY, 2)) << "\n";
+		initialX = -1;
+		initialY = -1;
+	}
+
+	//display circle
+	if (input->isMouseRDown()) {
+		circle.setPosition(input->getMouseX() - 50, input->getMouseY() - 50);
+		input->setMouseRDown(false);
 	}
 }
 
@@ -40,7 +75,8 @@ void Level::update()
 void Level::render()
 {
 	beginDraw();
-
+	window->draw(text);
+	window->draw(circle);
 	endDraw();
 }
 

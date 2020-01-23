@@ -25,5 +25,10 @@ private:
 	Input* input;
 
 	// Add your object here
+	sf::Font font;
+	sf::Text text;
+	int initialX = -1;
+	int initialY = -1;
+	sf::CircleShape circle;
 
 };
